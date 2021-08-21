@@ -15,6 +15,8 @@ public class ShadowShooter : MonoBehaviour
 
     [SerializeField] private List<BoltTrajectory> bolts = new List<BoltTrajectory>();
 
+    private float logT;
+
     private void Awake()
     {
         StartCoroutine(BoltLauncher());
@@ -41,7 +43,9 @@ public class ShadowShooter : MonoBehaviour
     }
 
     private void Update()
-    {
+    {        
+        Debug.Log($"{logT}  {Bezier.Evaluate(Vector3.right, Vector3.zero, Vector3.up, (Vector3) Vector2.one, logT)}");
+        logT += 0.1f;
         for (int i = bolts.Count - 1; i > 0; i--)
         {
             bolts[i].time += Time.deltaTime * _speed;

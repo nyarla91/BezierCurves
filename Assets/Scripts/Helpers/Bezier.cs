@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Numerics;
+using UnityEngine;
+using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
 
 namespace NyarlaEssentials
@@ -28,18 +30,6 @@ public static class Bezier
         // Result
         return Vector3.Lerp(p01, p12, t);
     }
-    
-    public static Vector3 Evaluate(Vector3[] points, float t)
-    {
-        for (int i = points.Length - 1; i >= 0; i--)
-        {
-            for (int j = 0; j < i; j++)
-            {
-                points[j] = Vector3.Lerp(points[j], points[j + 1], t);
-            }
-        }
-        return points[0];
-    }
 
     public static Vector3[] EvaluatePath(Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3, int quality)
     {
@@ -65,6 +55,28 @@ public static class Bezier
         {
             float t = (float) i / (float) quality;
             result[i] = Evaluate(p0, p1, p2, t);
+        }
+        return result;
+    }
+
+    public static Vector3[] ExtrudePath(Vector3[] path, float width)
+    {
+        Vector3[] result = new Vector3[path.Length];
+        for (int i = 0; i < path.Length; i++)
+        {
+            Vector3 direction = i < path.Length - 1 ? path[i + 1] - path[i] : path[i] - path[i - 1];
+            Vector3 normal = VectorHelper.Rotate(direction, 90).normalized;
+            result[i] = path[i] + normal * width;
+        }
+        return result;
+    }
+
+    public static float PathLength(Vector3[] path)
+    {
+        float result = 0;
+        for (int i = 1; i < path.Length; i++)
+        {
+            result += Vector2.Distance(path[i - 1], path[i]);
         }
         return result;
     }

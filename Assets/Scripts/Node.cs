@@ -9,18 +9,35 @@ public class Node : Transformer
 {
     private ClickableObject _clickable;
     [SerializeField] private GameObject _alignPrefab;
-    [SerializeField] private LineRenderer _line;
+    [SerializeField] private GameObject _linePrefab;
     [SerializeField] private int _quality;
+    [SerializeField] private float _thickness;
     public Node NextNode { get; set; }
     private Align[] _aligns = new Align[2];
+    private List<LineRenderer> _lines = new List<LineRenderer>();
 
-    private bool Draw => _line.enabled = NextNode != null;
+    private bool Draw
+    {
+        get
+        {
+            bool result = NextNode != null;
+            foreach (var line in _lines)
+            {
+                line.enabled = result;
+            }
+            return result;
+        }
+    }
 
     private void Awake()
     {
         _clickable = GetComponent<ClickableObject>();
         _clickable.OnDrag += Drag;
         _clickable.OnClick += ResetNodes;
+        for (int i = 0; i < 3; i++)
+        {
+            _lines.Add(Instantiate(_linePrefab, transform.position, Quaternion.identity).GetComponent<LineRenderer>());
+        }
     }
 
     private void Update()
@@ -36,8 +53,12 @@ public class Node : Transformer
         {
             positions[i].z = 50;
         }
-        _line.positionCount = _quality;
-        _line.SetPositions(positions);
+        for (int i = 0; i < _lines.Count; i++)
+        {
+            _lines[i].positionCount = _quality;
+            //_lines[i].SetPositions(positions);
+            _lines[i].SetPositions(Bezier.ExtrudePath(positions, _thickness * (i - 1)));
+        }
     }
 
     private void Drag(MouseButton button)

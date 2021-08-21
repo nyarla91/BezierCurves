@@ -99,8 +99,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _alignPrefab: {fileID: 6502524834957293582, guid: 52c19b0f149209b4685af9a7bf00a775, type: 3}
-  _line: {fileID: 3384014772149998111}
-  _quality: 24
+  _linePrefab: {fileID: 6316864246285187558, guid: 1209f76e07827774799604708411830b, type: 3}
+  _quality: 48
+  _thickness: 0.6
 --- !u!114 &3384014772149998107
 MonoBehaviour:
   m_ObjectHideFlags: 0

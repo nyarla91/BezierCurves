@@ -250,7 +250,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &690876177
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -313,8 +313,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _nodePrefab: {fileID: 3384014772149998105, guid: 5785d6b1aacbfa445a4a71752a6a9b10, type: 3}
-  _nodes: 5
-  _loop: 1
+  _nodes: 3
+  _loop: 0
 --- !u!4 &939904929
 Transform:
   m_ObjectHideFlags: 0
