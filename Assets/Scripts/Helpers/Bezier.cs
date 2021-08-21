@@ -31,6 +31,20 @@ public static class Bezier
         return Vector3.Lerp(p01, p12, t);
     }
 
+    public static Vector3 Evaluate(Vector3[] points, float t)
+    {
+        for (int i = points.Length - 1; i > 0; i--)
+        {
+            Vector3[] newPoints = new Vector3[i];
+            for (int j = 0; j < i; j++)
+            {
+                newPoints[j] = Vector3.Lerp(points[j], points[j + 1], t);
+            }
+            points = newPoints;
+        }
+        return points[0];
+    }
+
     public static Vector3[] EvaluatePath(Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3, int quality)
     {
         quality--;
@@ -55,6 +69,20 @@ public static class Bezier
         {
             float t = (float) i / (float) quality;
             result[i] = Evaluate(p0, p1, p2, t);
+        }
+        return result;
+    }
+
+    public static Vector3[] EvaluatePath(Vector3[] points, int quality)
+    {
+        quality--;
+        if (quality < 1)
+            quality = 1;
+        Vector3[] result = new Vector3[quality + 1];
+        for (int i = 0; i < result.Length; i++)
+        {
+            float t = (float) i / (float) quality;
+            result[i] = Evaluate(points, t);
         }
         return result;
     }

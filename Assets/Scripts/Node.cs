@@ -48,7 +48,7 @@ public class Node : Transformer
         Vector3 p1 = _aligns[1].transform.position;
         Vector3 p2 = NextNode._aligns[0].transform.position;
         Vector3 p3 = NextNode.transform.position;
-        Vector3[] positions = Bezier.EvaluatePath(p0, p1, p2, p3, _quality);
+        Vector3[] positions = Bezier.EvaluatePath(new []{p0, p1, p2, p3}, _quality);
         for (int i = 0; i < positions.Length; i++)
         {
             positions[i].z = 50;
