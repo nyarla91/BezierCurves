@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using NyarlaEssentials;
 using NyarlaEssentials.Clicks;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class Node : Transformer
 {
@@ -44,20 +45,22 @@ public class Node : Transformer
     {
         if (!Draw)
             return;
-        Vector3 p0 = transform.position;
-        Vector3 p1 = _aligns[1].transform.position;
-        Vector3 p2 = NextNode._aligns[0].transform.position;
-        Vector3 p3 = NextNode.transform.position;
-        Vector3[] positions = Bezier.EvaluatePath(new []{p0, p1, p2, p3}, _quality);
-        for (int i = 0; i < positions.Length; i++)
+        BezierCurve bezier = new BezierCurve(new Vector3[4]);
+        bezier.points[0] = transform.position;
+        bezier.points[1] = _aligns[1].transform.position;
+        bezier.points[2] = NextNode._aligns[0].transform.position;
+        bezier.points[3] = NextNode.transform.position;
+        print(bezier.EvaluatePath(5)[2]);
+        Vector3[] path = bezier.EvaluatePath(_quality);
+        for (int i = 0; i < path.Length; i++)
         {
-            positions[i].z = 50;
+            path[i].z = 50;
         }
         for (int i = 0; i < _lines.Count; i++)
         {
             _lines[i].positionCount = _quality;
             //_lines[i].SetPositions(positions);
-            _lines[i].SetPositions(Bezier.ExtrudePath(positions, _thickness * (i - 1)));
+            _lines[i].SetPositions(BezierCurve.ExtrudePath(path, _thickness * (i - 1)));
         }
     }
 
