@@ -11,15 +11,92 @@ namespace NyarlaEssentials
 {
 public class BezierCurve
 {
-    public Vector3[] points;
-    public Vector3[] LastPath { private set; get; }
-
-    public BezierCurve(Vector3[] points)
+    #region Fields
+    private Vector3[] _points;
+    public Vector3[] Points
     {
-        this.points = points;
+        private get => _points;
+        set
+        {
+            _points = value;
+            RecalculatePath();
+        }
     }
 
-    public Vector3 Evaluate(float t)
+    private int _quality = 2;
+    public int Quality
+    {
+        get => _quality;
+        set
+        {
+            _quality = Mathf.Clamp(value, 2, Int32.MaxValue);
+            RecalculatePath();
+        }
+    }
+    public Vector3[] Path { private set; get; }
+
+    public float Length { private set; get; }
+    #endregion
+
+    #region Constructors
+    
+    public BezierCurve() {}
+    public BezierCurve(Vector3[] points)
+    {
+        Points = points;
+    }
+    public BezierCurve(Vector3[] points, int quality)
+    {
+        Points = points;
+        Quality = quality;
+    }
+
+    #endregion
+
+    #region Instance Methods
+    
+    public Vector3 SetPoint(int index, Vector3 point)
+    {
+        index = Mathf.Clamp(index, 0, Int32.MaxValue);
+        if (Points.Length <= index)
+            return point;
+        Points[index] = point;
+        RecalculatePath();
+        return point;
+    }
+    
+    public Vector3 Evaluate(float t) => Evaluate(Points, t);
+
+    private void RecalculatePath()
+    {
+        Debug.Log(Quality);
+        Path = new Vector3[Quality];
+        for (int i = 0; i < Path.Length; i++)
+        {
+            float t = (float) i / (float) (Quality - 1);
+            Debug.Log(t);
+            Path[i] = Evaluate(t);
+        }
+        // Calculate Length
+        float result = 0;
+        for (int i = 1; i < Path.Length; i++)
+        {
+            result += Vector2.Distance(Path[i - 1], Path[i]);
+        }
+    }
+
+    public Vector3[] ExtrudePath(float width)
+    {
+        if (Path == null)
+            throw new Exception("No path has been calculated so far");
+        return ExtrudePath(Path, width);
+    }
+    
+    #endregion
+
+    #region Static Methods
+
+    public static Vector3 Evaluate(Vector3[] points, float t)
     {
         Vector3[] previousPoints = points;
         for (int i = previousPoints.Length - 1; i > 0; i--)
@@ -34,7 +111,7 @@ public class BezierCurve
         return previousPoints[0];
     }
 
-    public Vector3[] EvaluatePath(int quality)
+    public static Vector3[] EvaluatePath(Vector3[] points, int quality)
     {
         quality--;
         if (quality < 1)
@@ -43,16 +120,9 @@ public class BezierCurve
         for (int i = 0; i < result.Length; i++)
         {
             float t = (float) i / (float) quality;
-            result[i] = Evaluate(t);
+            result[i] = Evaluate(points, t);
         }
-        return LastPath = result;
-    }
-
-    public Vector3[] ExtrudePath(float width)
-    {
-        if (LastPath == null)
-            throw new Exception("No path has been calculated so far");
-        return ExtrudePath(LastPath, width);
+        return result;
     }
 
     public static Vector3[] ExtrudePath(Vector3[] path, float width)
@@ -67,17 +137,7 @@ public class BezierCurve
         return result;
     }
 
-    public float PathLength(int quality)
-    {
-        if (LastPath == null)
-            EvaluatePath(quality);
-        float result = 0;
-        for (int i = 1; i < LastPath.Length; i++)
-        {
-            result += Vector2.Distance(LastPath[i - 1], LastPath[i]);
-        }
-        return result;
-    }
+    #endregion
 }
 
 }

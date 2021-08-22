@@ -265,9 +265,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _boltPrefab: {fileID: 8826527778852545477, guid: 98322570d6e6f7646bef9bc4cb7eae6e, type: 3}
   _period: 1
+  _boltsAtOnce: 1
   _speed: 1
-  _alignT: 0
-  _alignAmpletude: 0
+  _alignT: 0.3
+  _alignAmpletude: 200
   bolts: []
 --- !u!4 &690876178
 Transform:

@@ -42,7 +42,6 @@ public class ShadowShooter : MonoBehaviour
                     points[j + 1] = startingPoint + alignDirection * Random.Range(-_alignAmpletude, _alignAmpletude);
                 }
                 newBolt.bezier = new BezierCurve(points);
-                newBolt.CalculateLength();
                 bolts.Add(newBolt);
             }
             yield return new WaitForSeconds(_period);
@@ -54,7 +53,7 @@ public class ShadowShooter : MonoBehaviour
         logT += 0.1f;
         for (int i = bolts.Count - 1; i > 0; i--)
         {
-            bolts[i].time += Time.deltaTime * _speed / bolts[i].TrajectoryLength;
+            bolts[i].time += Time.deltaTime * _speed / bolts[i].bezier.Length;
             if (bolts[i].time >= 1f)
             {
                 GameObject projectileToDestroy = bolts[i].projectile.gameObject;
@@ -73,12 +72,5 @@ public class ShadowShooter : MonoBehaviour
         public BezierCurve bezier;
         public Transform projectile;
         public float time;
-
-        public float TrajectoryLength { private set; get; }
-
-        public void CalculateLength()
-        {
-            TrajectoryLength = bezier.PathLength(8);
-        }
     }
 }

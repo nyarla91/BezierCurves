@@ -45,13 +45,12 @@ public class Node : Transformer
     {
         if (!Draw)
             return;
-        BezierCurve bezier = new BezierCurve(new Vector3[4]);
-        bezier.points[0] = transform.position;
-        bezier.points[1] = _aligns[1].transform.position;
-        bezier.points[2] = NextNode._aligns[0].transform.position;
-        bezier.points[3] = NextNode.transform.position;
-        print(bezier.EvaluatePath(5)[2]);
-        Vector3[] path = bezier.EvaluatePath(_quality);
+        BezierCurve bezier = new BezierCurve(new Vector3[4], _quality);
+        bezier.SetPoint(0, transform.position);
+        bezier.SetPoint(1, _aligns[1].transform.position);
+        bezier.SetPoint(2, NextNode._aligns[0].transform.position);
+        bezier.SetPoint(3, NextNode.transform.position);
+        Vector3[] path = bezier.Path;
         for (int i = 0; i < path.Length; i++)
         {
             path[i].z = 50;
@@ -60,7 +59,7 @@ public class Node : Transformer
         {
             _lines[i].positionCount = _quality;
             //_lines[i].SetPositions(positions);
-            _lines[i].SetPositions(BezierCurve.ExtrudePath(path, _thickness * (i - 1)));
+            _lines[i].SetPositions(bezier.ExtrudePath(_thickness * (i - 1)));
         }
     }
 

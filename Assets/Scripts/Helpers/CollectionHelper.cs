@@ -34,5 +34,17 @@ namespace NyarlaEssentials
                 throw new IndexOutOfRangeException();
             return collection[Random.Range(0, collection.Count)];
         }
+
+        public static string CollectionToString<T>(T[] collection)
+        {
+            string result = "";
+            for (int i = 0; i < collection.Length; i++)
+            {
+                result += collection[i].ToString();
+                if (i < collection.Length - 1)
+                    result += ",\n";
+            }
+            return result;
+        }
     }
 }
